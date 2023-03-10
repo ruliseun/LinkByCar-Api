@@ -78,12 +78,12 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error updating user profile",
-        error.httpStatusCode,
-        error
-      );
+      return res
+        .status(500)
+        .json({
+          message: "Error updating user profile",
+          error: error?.message,
+        });
     }
   }
 
@@ -161,6 +161,31 @@ class UserController extends AbstractController {
       AbstractController.errorResponse(
         res,
         "Error deleting user profile",
+        error.httpStatusCode,
+        error
+      );
+    }
+  }
+
+  async uploadProfileImage(req, res) {
+    const userData = matchedData(req);
+    const payload = {
+      ...userData,
+      image_file: await req.result,
+    };
+
+    try {
+      const user = await this.userService.uploadProfileImage(payload);
+      AbstractController.successResponse(
+        res,
+        { user },
+        "User profile image uploaded successfully"
+      );
+    } catch (error) {
+      console.log("ERR", error);
+      AbstractController.errorResponse(
+        res,
+        "Error uploading user profile image",
         error.httpStatusCode,
         error
       );
