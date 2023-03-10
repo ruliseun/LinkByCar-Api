@@ -32,17 +32,14 @@ export const userRegistrationValidator = [
 ];
 
 export const updateProfileValidator = [
-  check("name").isString().optional({ nullable: true }).trim(),
-  check("password").isString().optional({ nullable: true }).trim(),
-  check("username").isString().optional({ nullable: true }).trim(),
-  check("gender").isString().optional({ nullable: true }).trim(),
-  check("email_verified").optional({ nullable: true }).isBoolean(),
-  check("profile_image").optional({ nullable: true }),
-  check("email_verified").isString().optional({ nullable: true }).trim(),
-  check("role")
-    .optional({ nullable: true })
-    .isString()
-    .withMessage("Invalid Format for role"),
+  check("name").isString().optional().trim(),
+  check("password").isString().optional().trim(),
+  check("username").isString().optional().trim(),
+  check("gender").isString().optional().trim(),
+  check("email_verified").optional().isBoolean(),
+  check("profile_image").optional(),
+  check("email_verified").isString().optional().trim(),
+  check("role").optional().isString().withMessage("Invalid Format for role"),
 ];
 
 export const getAllProfile = [

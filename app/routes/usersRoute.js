@@ -10,6 +10,7 @@ import {
 } from "../middleware/validators/userValidator.js";
 import { validateRequiredID } from "../middleware/validators/commonValidator.js";
 import { adminAuth, userAuth } from "../middleware/authenticator.js";
+import { uploadImage, validateImageUpload } from "../middleware/uploads.js";
 
 const router = Router();
 
@@ -45,6 +46,16 @@ router.delete(
   loginAuth,
   adminAuth,
   (...args) => userController.deleteProfile(...args)
+);
+router.put(
+  "/profile-image-upload/:id",
+  validateRequiredID("id"),
+  validate,
+  loginAuth,
+  userAuth,
+  uploadImage,
+  validateImageUpload,
+  (...args) => userController.uploadProfileImage(...args)
 );
 
 export default router;

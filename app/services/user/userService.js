@@ -110,7 +110,30 @@ class UserService extends AbstractService {
    *
    */
   async updateProfile(userInfo) {
-    const { id, password, name, username } = userInfo;
+    const {
+      id,
+      password,
+      name,
+      username,
+      gender,
+      email_verified,
+      profile_image,
+      role,
+    } = userInfo;
+    if (
+      name === "" ||
+      username === "" ||
+      password === "" ||
+      gender === "" ||
+      email_verified === "" ||
+      profile_image === "" ||
+      role === ""
+    ) {
+      const error = new Error("Empty fields are not allowed");
+      error.httpStatusCode = 400;
+      throw error;
+    }
+
     let hashedPassword;
 
     const matchQuery = {
@@ -273,6 +296,27 @@ class UserService extends AbstractService {
    */
   async deleteProfile(id) {
     await AbstractService.deleteDocumentById(this.userModel, id);
+  }
+
+  /**
+   *
+   */
+  async uploadProfileImage(data) {
+    const {
+      id,
+      image_file: { secure_url },
+    } = data;
+
+    const updateData = {
+      profile_image: secure_url,
+    };
+
+    const user = await AbstractService.updateDocumentById(
+      this.userModel,
+      id,
+      updateData
+    );
+    return user._doc;
   }
 }
 
