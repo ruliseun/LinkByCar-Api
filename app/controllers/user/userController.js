@@ -65,6 +65,9 @@ class UserController extends AbstractController {
    */
   async updateProfile(req, res) {
     const userInfo = matchedData(req);
+    if (Object.keys(userInfo).length === 0) {
+      return res.status(400).json({ message: "No data to update" });
+    }
     userInfo.id = req.user;
     try {
       const user = await this.userService.updateProfile(userInfo);
@@ -78,12 +81,10 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      return res
-        .status(500)
-        .json({
-          message: "Error updating user profile",
-          error: error?.message,
-        });
+      return res.status(500).json({
+        message: "Error updating user profile",
+        error: error?.message,
+      });
     }
   }
 

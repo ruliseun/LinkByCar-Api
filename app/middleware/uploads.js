@@ -69,11 +69,9 @@ export function validateImageUpload(req, res, next) {
     !req.file.mimetype.startsWith("image/") ||
     !["image/jpeg", "image/png", "image/jpg"].includes(req.file.mimetype)
   ) {
-    return res
-      .status(400)
-      .json({
-        message: "File uploaded is not a valid image (JPG, JPEG or PNG).",
-      });
+    return res.status(400).json({
+      message: "File uploaded is not a valid image (JPG, JPEG or PNG).",
+    });
   }
 
   let streamUpload = (req) => {
