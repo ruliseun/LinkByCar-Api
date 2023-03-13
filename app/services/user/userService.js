@@ -43,7 +43,8 @@ class UserService extends AbstractService {
 
       if (userExists) {
         return {
-          message: "An account with that email/mobile number already exists",
+          message:
+            "An account with that email/username/mobile number already exists",
           status: "error",
         };
       }
@@ -75,10 +76,6 @@ class UserService extends AbstractService {
     const { email, password, username } = userInfo;
     try {
       if (!email && !username) {
-        return {
-          message: "Email or username is required",
-          status: "error",
-        };
         const error = new Error("Email or username is required");
         error.httpStatusCode = 400;
         throw error;
@@ -87,22 +84,14 @@ class UserService extends AbstractService {
       let user = await this.userModel.findOne(matchQuery);
 
       if (!user) {
-        return {
-          message: "Could not find a user matching those details",
-          status: "error",
-        };
         const error = new Error("Could not find a user matching those details");
         error.httpStatusCode = 400;
         throw error;
       }
 
-      const passwordMatch = Bcrypt.compare(password, user.password);
+      const passwordMatch = await Bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
-        return {
-          message: "Invalid login details",
-          status: "error",
-        };
         const error = new Error("Invalid login details");
         error.httpStatusCode = 400;
         throw error;
