@@ -18,7 +18,7 @@ class UserService extends AbstractService {
    *
    */
   async registerUser(userInfo) {
-    const { email, password, phone_no, username, role } = userInfo;
+    const { email, password, phone_no, username, role, gender } = userInfo;
     let hashedPassword;
     let userRole;
 
@@ -42,11 +42,10 @@ class UserService extends AbstractService {
       const userExists = await this.userModel.findOne(matchQuery);
 
       if (userExists) {
-        const error = new Error(
-          "An account with that email/mobile number already exists"
-        );
-        error.httpStatusCode = 409;
-        throw error;
+        return {
+          message: "An account with that email/mobile number already exists",
+          status: "error",
+        };
       }
 
       if (password) {
@@ -55,6 +54,7 @@ class UserService extends AbstractService {
 
       const userData = {
         ...userInfo,
+        gender: gender.toLowerCase(),
         password: hashedPassword,
         role: userRole._id,
       };
@@ -75,6 +75,10 @@ class UserService extends AbstractService {
     const { email, password, username } = userInfo;
     try {
       if (!email && !username) {
+        return {
+          message: "Email or username is required",
+          status: "error",
+        };
         const error = new Error("Email or username is required");
         error.httpStatusCode = 400;
         throw error;
@@ -83,16 +87,24 @@ class UserService extends AbstractService {
       let user = await this.userModel.findOne(matchQuery);
 
       if (!user) {
+        return {
+          message: "Could not find a user matching those details",
+          status: "error",
+        };
         const error = new Error("Could not find a user matching those details");
-        error.httpStatusCode = 404;
+        error.httpStatusCode = 400;
         throw error;
       }
 
       const passwordMatch = Bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
+        return {
+          message: "Invalid login details",
+          status: "error",
+        };
         const error = new Error("Invalid login details");
-        error.httpStatusCode = 401;
+        error.httpStatusCode = 400;
         throw error;
       }
 
@@ -102,6 +114,7 @@ class UserService extends AbstractService {
       return { ...user._doc, accessToken };
     } catch (error) {
       console.log("[ERROR] UserService.loginUser: ", error?.message);
+      error.httpStatusCode = 400;
       return null;
     }
   }
@@ -129,6 +142,10 @@ class UserService extends AbstractService {
       profile_image === "" ||
       role === ""
     ) {
+      return {
+        message: "Empty fields are not allowed",
+        status: "error",
+      };
       const error = new Error("Empty fields are not allowed");
       error.httpStatusCode = 400;
       throw error;
@@ -142,6 +159,10 @@ class UserService extends AbstractService {
     try {
       const invalidEntry = await this.userModel.findOne(matchQuery);
       if (invalidEntry) {
+        return {
+          message: "Name or username already exists",
+          status: "error",
+        };
         const error = new Error("Name or username already exists");
         error.httpStatusCode = 409;
         throw error;

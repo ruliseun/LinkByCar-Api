@@ -54,8 +54,8 @@ class UserController extends AbstractController {
       AbstractController.errorResponse(
         res,
         "Error logging in user",
-        error.httpStatusCode,
-        error
+        error,
+        error.httpStatusCode
       );
     }
   }
