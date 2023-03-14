@@ -13,7 +13,7 @@ export default class AbstractController {
   /**
    *
    */
-  static errorResponse(res, message = "Error", error, status_code = 500) {
+  static errorResponse(res, status_code = 500, error, message = "Error") {
     console.log(`E - ${error?.message}`, JSON.stringify(error));
     return res.status(status_code).json({
       status: "failed",

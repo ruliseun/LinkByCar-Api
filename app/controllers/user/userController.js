@@ -25,12 +25,7 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error registering user",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -51,12 +46,7 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error logging in user",
-        error,
-        error.httpStatusCode
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -81,10 +71,7 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      return res.status(500).json({
-        message: "Error updating user profile",
-        error: error?.message,
-      });
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -105,12 +92,7 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error getting user profile",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -136,12 +118,7 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error getting user profile",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -159,12 +136,7 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error deleting user profile",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -184,12 +156,7 @@ class UserController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error uploading user profile image",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 }
