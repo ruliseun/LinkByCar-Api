@@ -38,35 +38,30 @@ class UserService extends AbstractService {
         break;
     }
 
-    try {
-      const userExists = await this.userModel.findOne(matchQuery);
+    const userExists = await this.userModel.findOne(matchQuery);
 
-      if (userExists) {
-        return {
-          message:
-            "An account with that email/username/mobile number already exists",
-          status: "error",
-        };
-      }
-
-      if (password) {
-        hashedPassword = Bcrypt.hashSync(password, bcryptSalt);
-      }
-
-      const userData = {
-        ...userInfo,
-        gender: gender.toLowerCase(),
-        password: hashedPassword,
-        role: userRole._id,
-      };
-
-      const user = await AbstractService.create(this.userModel, userData);
-
-      return { ...user, role: userRole.name };
-    } catch (error) {
-      console.log("[ERROR] UserService.registerUser: ", error?.message);
-      return null;
+    if (userExists) {
+      const error = new Error(
+        "User with Email/Phone No/Username already exists"
+      );
+      error.httpStatusCode = 400;
+      throw error;
     }
+
+    if (password) {
+      hashedPassword = Bcrypt.hashSync(password, bcryptSalt);
+    }
+
+    const userData = {
+      ...userInfo,
+      gender: gender.toLowerCase(),
+      password: hashedPassword,
+      role: userRole._id,
+    };
+
+    const user = await AbstractService.create(this.userModel, userData);
+
+    return { ...user, role: userRole.name };
   }
 
   /**
@@ -74,38 +69,33 @@ class UserService extends AbstractService {
    */
   async loginUser(userInfo) {
     const { email, password, username } = userInfo;
-    try {
-      if (!email && !username) {
-        const error = new Error("Email or username is required");
-        error.httpStatusCode = 400;
-        throw error;
-      }
-      const matchQuery = email ? { email } : { username };
-      let user = await this.userModel.findOne(matchQuery);
 
-      if (!user) {
-        const error = new Error("Could not find a user matching those details");
-        error.httpStatusCode = 400;
-        throw error;
-      }
-
-      const passwordMatch = await Bcrypt.compare(password, user.password);
-
-      if (!passwordMatch) {
-        const error = new Error("Invalid login details");
-        error.httpStatusCode = 400;
-        throw error;
-      }
-
-      const userRecord = user.toObject();
-      const accessToken = this.generateAccessToken(userRecord);
-
-      return { ...user._doc, accessToken };
-    } catch (error) {
-      console.log("[ERROR] UserService.loginUser: ", error?.message);
+    if (!email && !username) {
+      const error = new Error("Email or username is required");
       error.httpStatusCode = 400;
-      return null;
+      throw error;
     }
+    const matchQuery = email ? { email } : { username };
+    let user = await this.userModel.findOne(matchQuery);
+
+    if (!user) {
+      const error = new Error("Could not find a user matching those details");
+      error.httpStatusCode = 400;
+      throw error;
+    }
+
+    const passwordMatch = await Bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      const error = new Error("Invalid login details");
+      error.httpStatusCode = 400;
+      throw error;
+    }
+
+    const userRecord = user.toObject();
+    const accessToken = this.generateAccessToken(userRecord);
+
+    return { ...user._doc, accessToken };
   }
 
   /**
@@ -131,10 +121,6 @@ class UserService extends AbstractService {
       profile_image === "" ||
       role === ""
     ) {
-      return {
-        message: "Empty fields are not allowed",
-        status: "error",
-      };
       const error = new Error("Empty fields are not allowed");
       error.httpStatusCode = 400;
       throw error;
@@ -145,36 +131,28 @@ class UserService extends AbstractService {
     const matchQuery = {
       $or: [{ name }, { username }],
     };
-    try {
-      const invalidEntry = await this.userModel.findOne(matchQuery);
-      if (invalidEntry) {
-        return {
-          message: "Name or username already exists",
-          status: "error",
-        };
-        const error = new Error("Name or username already exists");
-        error.httpStatusCode = 409;
-        throw error;
-      }
 
-      if (password) {
-        hashedPassword = Bcrypt.hashSync(password, bcryptSalt);
-      }
-      const userData = {
-        ...userInfo,
-        password: hashedPassword,
-      };
-      const user = await AbstractService.updateDocumentById(
-        this.userModel,
-        id,
-        userData
-      );
-
-      return user;
-    } catch (error) {
-      console.log("[ERROR] UserService.updateProfile: ", error?.message);
-      return null;
+    const invalidEntry = await this.userModel.findOne(matchQuery);
+    if (invalidEntry) {
+      const error = new Error("Name or username already exists");
+      error.httpStatusCode = 409;
+      throw error;
     }
+
+    if (password) {
+      hashedPassword = Bcrypt.hashSync(password, bcryptSalt);
+    }
+    const userData = {
+      ...userInfo,
+      password: hashedPassword,
+    };
+    const user = await AbstractService.updateDocumentById(
+      this.userModel,
+      id,
+      userData
+    );
+
+    return user;
   }
 
   /**
@@ -182,13 +160,8 @@ class UserService extends AbstractService {
    */
   async getProfile(userData) {
     const { id } = userData;
-    try {
-      const user = await AbstractService.getDocumentById(this.userModel, id);
-      return user;
-    } catch (error) {
-      console.log("[ERROR] UserService.getProfile: ", error?.message);
-      return null;
-    }
+    const user = await AbstractService.getDocumentById(this.userModel, id);
+    return user;
   }
 
   /**

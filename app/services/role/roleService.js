@@ -16,32 +16,22 @@ class RoleService extends AbstractService {
       $or: [{ name: name.toLowerCase() }],
     };
 
-    try {
-      const roleExists = await this.roleModel.findOne(matchQuery);
+    const roleExists = await this.roleModel.findOne(matchQuery);
 
-      if (roleExists) {
-        const error = new Error("A role with that name already exists");
-        error.httpStatusCode = 409;
-        throw error;
-      }
-
-      const role = await AbstractService.create(this.roleModel, roleInfo);
-
-      return role;
-    } catch (error) {
-      console.log("[ERROR] RoleService.createRole: ", error?.message);
-      return null;
+    if (roleExists) {
+      const error = new Error("A role with that name already exists");
+      error.httpStatusCode = 409;
+      throw error;
     }
+
+    const role = await AbstractService.create(this.roleModel, roleInfo);
+
+    return role;
   }
 
   async getAllRoles() {
-    try {
-      const roles = await this.roleModel.find();
-      return roles;
-    } catch (error) {
-      console.log("[ERROR] RoleService.getAllRoles: ", error?.message);
-      return null;
-    }
+    const roles = await this.roleModel.find();
+    return roles;
   }
 
   async getRoleById(roleId) {
@@ -52,35 +42,30 @@ class RoleService extends AbstractService {
 
   async updateRole(roleInfo) {
     const { id, name, permissions } = roleInfo;
-    try {
-      const userRole = await this.roleModel.findById(id);
-      if (!userRole) {
-        return {
-          error: "Role does not exist",
-          data: null,
-        };
-      }
 
-      if (userRole.permissions.includes(permissions.toLowerCase())) {
-        return {
-          error: "Permission already exists",
-          data: null,
-        };
-      }
-
-      userRole.name = name;
-      userRole.permissions.push(permissions.toLowerCase());
-
-      const updatedRecord = await userRole.save();
-
+    const userRole = await this.roleModel.findById(id);
+    if (!userRole) {
       return {
-        message: "Role updated successfully",
-        data: updatedRecord,
+        error: "Role does not exist",
+        data: null,
       };
-    } catch (error) {
-      console.log("[ERROR] RoleService.updateRole: ", error?.message);
-      return null;
     }
+
+    if (userRole.permissions.includes(permissions.toLowerCase())) {
+      const error = new Error("Permission already exists");
+      error.httpStatusCode = 409;
+      throw error;
+    }
+
+    userRole.name = name;
+    userRole.permissions.push(permissions.toLowerCase());
+
+    const updatedRecord = await userRole.save();
+
+    return {
+      message: "Role updated successfully",
+      data: updatedRecord,
+    };
   }
 
   async deleteRole(roleInfo) {

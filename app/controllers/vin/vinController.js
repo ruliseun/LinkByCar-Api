@@ -18,12 +18,7 @@ class VinController extends AbstractController {
       AbstractController.successResponse(res, { ...result }, "Vin validated");
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error validating vin",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -38,12 +33,7 @@ class VinController extends AbstractController {
       await this.vinService.batchValidateVin(uploadData, req, res);
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error validating vin",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 }

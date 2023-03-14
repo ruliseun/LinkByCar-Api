@@ -25,12 +25,7 @@ class RolesController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error creating role",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -47,12 +42,7 @@ class RolesController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error getting roles",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -67,12 +57,7 @@ class RolesController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error getting role",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -87,12 +72,7 @@ class RolesController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error updating role",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 
@@ -107,12 +87,7 @@ class RolesController extends AbstractController {
       );
     } catch (error) {
       console.log("ERR", error);
-      AbstractController.errorResponse(
-        res,
-        "Error deleting role",
-        error.httpStatusCode,
-        error
-      );
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
 }
