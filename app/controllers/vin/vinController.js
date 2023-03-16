@@ -36,6 +36,44 @@ class VinController extends AbstractController {
       AbstractController.errorResponse(res, error.httpStatusCode, error);
     }
   }
+
+  async getVinData(req, res) {
+    const data = matchedData(req);
+    try {
+      const result = await this.vinService.getVinData(data);
+      AbstractController.successResponse(
+        res,
+        { ...result },
+        "Vin data retrieved"
+      );
+    } catch (error) {
+      console.log("ERR", error);
+      // AbstractController.errorResponse(res, error.httpStatusCode, error);
+      return res.status(500).json({
+        message: "Error validating VINs",
+        data: null,
+        status: error?.response?.status,
+        error: error?.response?.data?.detail,
+      });
+    }
+  }
+
+  async batchVinData(req, res) {
+    const data = matchedData(req);
+    const country = req.body.country;
+    const file = await Promise.resolve(req.result);
+    const uploadData = {
+      ...data,
+      country,
+      file,
+    };
+    try {
+      await this.vinService.batchVinData(uploadData, req, res);
+    } catch (error) {
+      console.log("ERR", error);
+      AbstractController.errorResponse(res, error.httpStatusCode, error);
+    }
+  }
 }
 
 export default new VinController();
