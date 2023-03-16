@@ -32,11 +32,13 @@ router.post(
   (...args) => vinController.batchValidateVin(...args)
 );
 
-router.get("/get_vin_data", getVinValidation, validate, (...args) =>
+router.get("/get_vin_data", loginAuth, getVinValidation, validate, (...args) =>
   vinController.getVinData(...args)
 );
 router.get(
   "/batch_vin_data",
+  loginAuth,
+  adminAuth,
   uploadBatchVIN,
   validateBatchVINUpload,
   (...args) => vinController.batchVinData(...args)
