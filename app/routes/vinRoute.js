@@ -5,7 +5,10 @@ import {
   validateBatchVINUpload,
 } from "../middleware/uploads.js";
 import validate from "../middleware/validators/index.js";
-import { vinValidation } from "../middleware/validators/vinValidation.js";
+import {
+  getVinValidation,
+  vinValidation,
+} from "../middleware/validators/vinValidation.js";
 import { adminAuth } from "../middleware/authenticator.js";
 import loginAuth from "../middleware/auth.js";
 
@@ -27,6 +30,16 @@ router.post(
   uploadBatchVIN,
   validateBatchVINUpload,
   (...args) => vinController.batchValidateVin(...args)
+);
+
+router.get("/get_vin_data", getVinValidation, validate, (...args) =>
+  vinController.getVinData(...args)
+);
+router.get(
+  "/batch_vin_data",
+  uploadBatchVIN,
+  validateBatchVINUpload,
+  (...args) => vinController.batchVinData(...args)
 );
 
 export default router;

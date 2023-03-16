@@ -21,6 +21,9 @@ export const cloudinaryName = process.env.CLOUD_NAME;
 export const cloudinaryKey = process.env.API_KEY;
 export const cloudinarySecret = process.env.API_SECRET;
 
+// Auto Pass
+export const autoPassToken = process.env.AUTOPASS_ACCESS_TOKEN;
+
 (() => {
   const requiredEnvs = {
     nodeEnv,
@@ -31,6 +34,7 @@ export const cloudinarySecret = process.env.API_SECRET;
     cloudinaryName,
     cloudinaryKey,
     cloudinarySecret,
+    autoPassToken,
   };
   console.log("running env check", requiredEnvs);
 
